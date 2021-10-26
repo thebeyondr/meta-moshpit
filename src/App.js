@@ -1,25 +1,23 @@
-import logo from './logo.svg';
+import * as React from 'react';
+import { ethers } from 'ethers';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default function App() {
+    const wave = () => {};
 
-export default App;
+    return (
+        <div className="mainContainer">
+            <div className="dataContainer">
+                <div className="header">🔥 GREETINGS, MORTAL 🔥</div>
+
+                <div className="bio">
+                    Join the MoshPit and deliver unto us thine banger as a link.
+                </div>
+
+                <button className="waveButton" onClick={wave}>
+                    BESTOW THINE TRACK
+                </button>
+            </div>
+        </div>
+    );
+}
