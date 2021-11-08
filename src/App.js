@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-// import { ethers } from 'ethers';
+import { ethers } from 'ethers';
 import './App.css';
 
+import abi from './utils/MoshPit.json';
+
 export default function App() {
-    const addSong = () => {};
     const [currentAccount, setCurrentAccount] = useState('');
+
+    const contractAddress = process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY;
+    const contractABI = abi.abi;
 
     const checkIfWalletIsConnected = async () => {
         try {
@@ -51,6 +55,38 @@ export default function App() {
         }
     };
 
+    const addSong = async () => {
+        try {
+            const { ethereum } = window;
+
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const moshPitContract = new ethers.Contract(
+                    contractAddress,
+                    contractABI,
+                    signer
+                );
+
+                let count = await moshPitContract.getTotalTracks();
+                console.log('Retrieved total tracks added:', count.toNumber());
+
+                const songTxn = await moshPitContract.addTrack();
+                console.log('Mining..', songTxn.hash);
+
+                await songTxn.wait();
+                console.log('Mined --', songTxn.hash);
+
+                count = await moshPitContract.getTotalTracks();
+                console.log('Retrieved total tracks added:', count.toNumber());
+            } else {
+                console.log("Ethereum object doesn't exist!");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         checkIfWalletIsConnected();
     }, []);
@@ -64,9 +100,9 @@ export default function App() {
                     Join the MoshPit and deliver unto us thine banger as a link.
                 </div>
 
-                {/* <button className="waveButton" onClick={addSong}>
+                <button className="waveButton" onClick={addSong}>
                     Add your song
-                </button> */}
+                </button>
                 {!currentAccount && (
                     <button className="waveButton" onClick={connectWallet}>
                         Connect wallet
