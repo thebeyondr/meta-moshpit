@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import './App.css';
+// import './App.css';
 
 import abi from './utils/MoshPit.json';
 
 export default function App() {
     const [currentAccount, setCurrentAccount] = useState('');
     const [totalTracks, setTotalTracks] = useState(0);
+    const [isAddingTrack, updateAddingTrack] = useState(false);
 
     const contractAddress = `${process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY}`;
     const contractABI = abi.abi;
@@ -121,7 +122,7 @@ export default function App() {
     });
 
     return (
-        <div className="mainContainer">
+        <main className="container">
             <div className="dataContainer">
                 <div className="header">🔥 META MOSHPIT 🔥</div>
 
@@ -130,7 +131,11 @@ export default function App() {
                 </div>
                 <div className="bio">⚡ Total tracks added — {totalTracks}</div>
 
-                <button className="waveButton" onClick={addSong}>
+                <button
+                    type="button"
+                    className="bg-red-500 py-2 px-4 rounded-md text-white font-semibold text-opacity-80"
+                    onClick={addSong}
+                >
                     ADD YOUR TRACK
                 </button>
                 {!currentAccount && (
@@ -139,6 +144,6 @@ export default function App() {
                     </button>
                 )}
             </div>
-        </div>
+        </main>
     );
 }
