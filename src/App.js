@@ -6,9 +6,9 @@ import abi from './utils/MoshPit.json';
 
 export default function App() {
     const [currentAccount, setCurrentAccount] = useState('');
-    const [totalTracks, setTotalTracks] = useState();
+    const [totalTracks, setTotalTracks] = useState(0);
 
-    const contractAddress = process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY;
+    const contractAddress = `${process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY}`;
     const contractABI = abi.abi;
 
     const checkIfWalletIsConnected = async () => {
