@@ -6,6 +6,7 @@ import abi from './utils/MoshPit.json';
 
 export default function App() {
     const [currentAccount, setCurrentAccount] = useState('');
+    const [totalTracks, setTotalTracks] = useState();
 
     const contractAddress = process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY;
     const contractABI = abi.abi;
@@ -87,21 +88,50 @@ export default function App() {
         }
     };
 
+    const getTotalTracks = async () => {
+        try {
+            const { ethereum } = window;
+
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const moshPitContract = new ethers.Contract(
+                    contractAddress,
+                    contractABI,
+                    signer
+                );
+
+                let count = await moshPitContract.getTotalTracks();
+                console.log('total tracks added:', count.toNumber());
+                setTotalTracks(count.toNumber());
+            } else {
+                console.log("Ethereum object doesn't exist!");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         checkIfWalletIsConnected();
     }, []);
 
+    useEffect(() => {
+        getTotalTracks();
+    });
+
     return (
         <div className="mainContainer">
             <div className="dataContainer">
-                <div className="header">🔥 GREETINGS, MORTAL 🔥</div>
+                <div className="header">🔥 META MOSHPIT 🔥</div>
 
                 <div className="bio">
-                    Join the MoshPit and deliver unto us thine banger as a link.
+                    Deliver unto us thine metal/rock/metalcore banger as a link.
                 </div>
+                <div className="bio">⚡ Total tracks added — {totalTracks}</div>
 
                 <button className="waveButton" onClick={addSong}>
-                    Add your song
+                    ADD YOUR TRACK
                 </button>
                 {!currentAccount && (
                     <button className="waveButton" onClick={connectWallet}>
