@@ -8,6 +8,9 @@ contract MoshPit {
     uint256 totalTracks;
     mapping(address => uint256) userTracksAdded;
 
+    // Fires when a new track is added
+    event NewTrack(address indexed from, uint256 timestamp, string message);
+
     constructor() {
         console.log("Welcome to the MoshPit! :)");
     }
@@ -17,7 +20,7 @@ contract MoshPit {
         userTracksAdded[msg.sender] += 1;
         console.log("%s has added a banger!", msg.sender);
     }
-
+1
     function getTotalTracks() public view returns (uint256) {
         string memory totalTrackText = (
             totalTracks == 1
