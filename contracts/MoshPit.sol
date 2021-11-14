@@ -6,40 +6,39 @@ import "hardhat/console.sol";
 
 contract MoshPit {
     uint256 totalTracks;
-    mapping(address => uint256) userTracksAdded;
+    // mapping(address => uint256) userTracksAdded;
 
     // Fires when a new track is added
-    event NewTrack(address indexed from, uint256 timestamp, string message);
+    event NewTrack(address indexed from, string message, uint256 timestamp);
+
+    struct Track {
+        address mosher;
+        string message;
+        uint256 timestamp;
+    }
+
+    Track[] tracks;
 
     constructor() {
         console.log("Welcome to the MoshPit! :)");
     }
 
-    function addTrack() public {
+    function addTrack(string memory _message) public {
         totalTracks += 1;
-        userTracksAdded[msg.sender] += 1;
+        // userTracksAdded[msg.sender] += 1;
         console.log("%s has added a banger!", msg.sender);
+
+        tracks.push(Track(msg.sender, _message, block.timestamp));
+
+        emit NewTrack(msg.sender, _message, block.timestamp);
     }
-1
+
+    function getAllTracks() public view returns (Track[] memory) {
+        return tracks;
+    }
+
     function getTotalTracks() public view returns (uint256) {
-        string memory totalTrackText = (
-            totalTracks == 1
-                ? "There is %s track in the MoshPit"
-                : "There are %s tracks in the MoshPit"
-        );
-
-        console.log(totalTrackText, totalTracks);
-
+        console.log("We have %d total waves", totalTracks);
         return totalTracks;
-    }
-
-    function getTotalUserTracks() public view returns (uint256) {
-        string memory totalUserTrack = (
-            userTracksAdded[msg.sender] == 1
-                ? "%s has sent %s banger!"
-                : "%s has sent %s bangers!"
-        );
-        console.log(totalUserTrack, msg.sender, userTracksAdded[msg.sender]);
-        return userTracksAdded[msg.sender];
     }
 }
