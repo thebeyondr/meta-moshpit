@@ -1,29 +1,35 @@
 const main = async () => {
-    const [owner, randomMosher] = await hre.ethers.getSigners();
     const moshPitFactory = await hre.ethers.getContractFactory('MoshPit');
     const moshPitContract = await moshPitFactory.deploy();
     await moshPitContract.deployed();
 
     console.log('Contract deployed to: ', moshPitContract.address);
-    console.log('Contract deployed by: ', owner.address);
 
     let trackCount;
     trackCount = await moshPitContract.getTotalTracks();
+    console.log('total tracks ', trackCount.toNumber());
 
-    const addTrackTxn = await moshPitContract.addTrack();
-    await addTrackTxn.wait();
+    let addTrackTxn = await moshPitContract.addTrack(
+        'Nirvana - Smells Like Teen Spirit'
+    );
+    await addTrackTxn.wait(); // wait for the transaction to be mined
 
-    trackCount = await moshPitContract.getTotalTracks();
+    // trackCount = await moshPitContract.getTotalTracks();
 
-    addTrackTx = await moshPitContract.connect(randomMosher).addTrack();
-    await addTrackTxn.wait();
-    trackCount = await moshPitContract.getTotalTracks();
-
-    let userTrack;
-    userTrack = await moshPitContract.getTotalUserTracks();
-    userTrack = await moshPitContract
+    const [_, randomMosher] = await hre.ethers.getSigners();
+    addTrackTxn = await moshPitContract
         .connect(randomMosher)
-        .getTotalUserTracks();
+        .addTrack('Metallica - Enter Sandman');
+    await addTrackTxn.wait();
+    console.log('Got to random add txn');
+    // trackCount = await moshPitContract.getTotalTracks();
+
+    let allWaves = await moshPitContract.getAllTracks();
+    console.log(allWaves);
+    // userTrack = await moshPitContract.getTotalUserTracks();
+    // userTrack = await moshPitContract
+    //     .connect(randomMosher)
+    //     .getTotalUserTracks();
 };
 
 const runMain = async () => {

@@ -1,6 +1,5 @@
 require('@nomiclabs/hardhat-waffle');
 require('dotenv').config();
-console.log(process.env);
 
 const alchemyAPIURL = `${process.env.REACT_APP_ALCHEMY_API_URL}`;
 const rinkebyPrivateKey = `${process.env.REACT_APP_ACCOUNT_PRIVATE_KEY}`;
