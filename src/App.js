@@ -12,6 +12,10 @@ export default function App() {
     const contractAddress = `${process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY}`;
     const contractABI = abi.abi;
 
+    const formatAddress = (address) => {
+        return `${address.slice(0, 5)}...${address.slice(-3)}`;
+    };
+
     // const checkIfWalletIsConnected = async () => {
     //     try {
     //         // Check if we can access window.ethereum
@@ -158,41 +162,52 @@ export default function App() {
     });
 
     return (
-        <main className="container">
-            <div className="dataContainer">
-                <div className="header">🔥 META MOSHPIT 🔥</div>
+        <main className="container mx-auto px-4 pt-4">
+            {/* <div className="dataContainer"> */}
+            <h1>META MOSHPIT</h1>
 
-                <div className="bio">
-                    Deliver unto us thine metal/rock/metalcore banger as a link.
-                </div>
-                <div className="bio">
-                    ⚡ Total tracks added — {allTracks.length}
-                </div>
+            <div className="bio">
+                Deliver unto us thine metal/rock/metalcore banger as a link.
+            </div>
+            <div className="bio">
+                ⚡ Total tracks added — {allTracks.length}
+            </div>
 
-                <button
-                    type="button"
-                    className="bg-red-500 py-2 px-4 rounded-md text-white font-semibold text-opacity-80"
-                    onClick={addTrack}
-                >
-                    ADD YOUR TRACK
+            <button
+                type="button"
+                className="bg-red-500 py-2 px-4 rounded-md text-white font-semibold text-opacity-80"
+                onClick={addTrack}
+            >
+                ADD YOUR TRACK
+            </button>
+            {!currentAccount && (
+                <button className="waveButton" onClick={connectWallet}>
+                    Connect wallet
                 </button>
-                {!currentAccount && (
-                    <button className="waveButton" onClick={connectWallet}>
-                        Connect wallet
-                    </button>
-                )}
-
+            )}
+            <div className="pt-6">
                 {allTracks &&
                     allTracks.map((track, index) => {
                         return (
-                            <div key={index}>
-                                <div>Address: {track.address}</div>
-                                <div>Time: {track.timestamp.toString()}</div>
-                                <div>Message: {track.message}</div>
+                            <div
+                                key={index}
+                                className="mt-2 border-2 border-white  border-opacity-30 rounded-md p-3"
+                            >
+                                <div className="font-semibold text-lg">
+                                    {track.message}
+                                </div>
+                                <div>
+                                    from {formatAddress(track.address)}
+                                    {' @ '}
+                                    {new Intl.DateTimeFormat('en-US').format(
+                                        track.timestamp
+                                    )}
+                                </div>
                             </div>
                         );
                     })}
             </div>
+            {/* </div> */}
         </main>
     );
 }
