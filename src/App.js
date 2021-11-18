@@ -162,30 +162,14 @@ export default function App() {
     });
 
     return (
-        <main className="container mx-auto px-4 pt-4">
+        <main className="container mx-auto px-4 pt-16">
             {/* <div className="dataContainer"> */}
-            <h1>META MOSHPIT</h1>
+            <h1 className="font-display text-3xl">meta-moshpit.</h1>
+            <p className="font-display opacity-70">by ~vnqsh.</p>
 
-            <div className="bio">
-                Deliver unto us thine metal/rock/metalcore banger as a link.
-            </div>
-            <div className="bio">
-                ⚡ Total tracks added — {allTracks.length}
-            </div>
+            <p className="pt-6">⏤ Add your favorite rock bangers.</p>
 
-            <button
-                type="button"
-                className="bg-red-500 py-2 px-4 rounded-md text-white font-semibold text-opacity-80"
-                onClick={addTrack}
-            >
-                ADD YOUR TRACK
-            </button>
-            {!currentAccount && (
-                <button className="waveButton" onClick={connectWallet}>
-                    Connect wallet
-                </button>
-            )}
-            <div className="pt-6">
+            <div className="pt-3">
                 {allTracks &&
                     allTracks.map((track, index) => {
                         return (
@@ -193,12 +177,12 @@ export default function App() {
                                 key={index}
                                 className="mt-2 border-2 border-white  border-opacity-30 rounded-md p-3"
                             >
-                                <div className="font-semibold text-lg">
+                                <div className="font-display text-base">
                                     {track.message}
                                 </div>
-                                <div>
-                                    from {formatAddress(track.address)}
-                                    {' @ '}
+                                <div className="opacity-70">
+                                    🤘 {formatAddress(track.address)}
+                                    {' • '}
                                     {new Intl.DateTimeFormat('en-US').format(
                                         track.timestamp
                                     )}
@@ -206,6 +190,20 @@ export default function App() {
                             </div>
                         );
                     })}
+            </div>
+            <div className="fixed bottom-0 p-3">
+                <button
+                    type="button"
+                    className="bg-red-500 py-2 px-4 rounded-md text-white font-semibold text-opacity-80"
+                    onClick={addTrack}
+                >
+                    ADD YOUR TRACK
+                </button>
+                {!currentAccount && (
+                    <button className="waveButton" onClick={connectWallet}>
+                        Connect wallet
+                    </button>
+                )}
             </div>
             {/* </div> */}
         </main>
