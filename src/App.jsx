@@ -16,6 +16,7 @@ export default function App() {
         return `${address.slice(0, 5)}...${address.slice(-3)}`;
     };
 
+    // console.log(getRandomRockEmoji());
     // const checkIfWalletIsConnected = async () => {
     //     try {
     //         // Check if we can access window.ethereum
@@ -122,6 +123,26 @@ export default function App() {
     // };
 
     const getAllTracks = async () => {
+        const emojiDictionary = [
+            '🤘',
+            '😈',
+            '🎸',
+            '🌠',
+            '🐐',
+            '💀',
+            '☠',
+            '⛧',
+            '⚰️',
+            '⁶⁶⁶',
+            '⸸',
+            'ψ',
+            '👁',
+            '⚡',
+            '🌬',
+            '🩸',
+            '🦄',
+            '🌿',
+        ];
         try {
             const { ethereum } = window;
             if (ethereum) {
@@ -139,6 +160,9 @@ export default function App() {
                     address: track.mosher,
                     timestamp: new Date(track.timestamp * 1000),
                     message: track.message,
+                    emoji: emojiDictionary[
+                        Math.floor(Math.random() * emojiDictionary.length)
+                    ],
                 }));
 
                 setAllTracks(tracksCleaned);
@@ -159,53 +183,87 @@ export default function App() {
 
     useEffect(() => {
         getAllTracks();
-    });
+    }, []);
 
     return (
-        <main className="container mx-auto px-4 pt-16">
-            {/* <div className="dataContainer"> */}
-            <h1 className="font-display text-3xl">meta-moshpit.</h1>
-            <p className="font-display opacity-70">by ~vnqsh.</p>
+        <>
+            <main className="container mx-auto px-4 pt-16">
+                {/* <div className="dataContainer"> */}
+                <h1 className="font-display text-3xl">meta-moshpit.</h1>
+                <p className="font-display opacity-70">by ~vnqsh.</p>
 
-            <p className="pt-6">⏤ Add your favorite rock bangers.</p>
+                <p className="pt-6">💥 Add your favorite rock bangers.</p>
 
-            <div className="pt-3">
-                {allTracks &&
-                    allTracks.map((track, index) => {
-                        return (
-                            <div
-                                key={index}
-                                className="mt-2 border-2 border-white  border-opacity-30 rounded-md p-3"
-                            >
-                                <div className="font-display text-base">
-                                    {track.message}
+                <div className="pt-3">
+                    {allTracks &&
+                        allTracks.map((track, index) => {
+                            return (
+                                <div
+                                    key={index}
+                                    className="mt-2 border-2 border-white  border-opacity-30 rounded-md p-3"
+                                >
+                                    <div className="font-display text-base">
+                                        {track.message}
+                                    </div>
+                                    <div className="flex">
+                                        {track.emoji}{' '}
+                                        <div className="text-white text-opacity-70 pl-2">
+                                            {formatAddress(track.address)}
+                                            {' • '}
+                                            {new Intl.DateTimeFormat(
+                                                'en-US'
+                                            ).format(track.timestamp)}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="opacity-70">
-                                    🤘 {formatAddress(track.address)}
-                                    {' • '}
-                                    {new Intl.DateTimeFormat('en-US').format(
-                                        track.timestamp
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
-            </div>
-            <div className="fixed bottom-0 p-3">
-                <button
-                    type="button"
-                    className="bg-red-500 py-2 px-4 rounded-md text-white font-semibold text-opacity-80"
-                    onClick={addTrack}
-                >
-                    ADD YOUR TRACK
-                </button>
+                            );
+                        })}
+                </div>
+                {/* </div> */}
+            </main>
+            <div className="fixed bottom-0 p-4  bg-gradient-to-r from-red-600 to-purple-800 w-full backdrop-filter backdrop-blur-sm bg-opacity-50 text-center rounded-t-lg">
+                {currentAccount && (
+                    <div className="bg-purple-800 bg-opacity-40 rounded-full flex items-center w-56 px-3 py-2">
+                        <span className="flex h-3 w-3 relative mr-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-300 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-400"></span>
+                        </span>
+                        <p>Connected to {formatAddress(currentAccount)} </p>
+                    </div>
+                )}
+                {currentAccount && (
+                    <div className="pt-6">
+                        <div className="text-left">
+                            <p>Song title</p>
+                            <input
+                                type="text"
+                                className="rounded-lg p-3 w-full font-sans placeholder-blue-300"
+                                placeholder="Castaways"
+                            />
+                        </div>
+                        <div className="text-left">
+                            <p>Artist</p>
+                            <input
+                                type="text"
+                                className="rounded-lg p-3 w-full font-sans"
+                                placeholder="The Backyardigans"
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            className="border-b-2"
+                            onClick={addTrack}
+                        >
+                            ADD YOUR TRACK
+                        </button>
+                    </div>
+                )}
                 {!currentAccount && (
-                    <button className="waveButton" onClick={connectWallet}>
-                        Connect wallet
+                    <button onClick={connectWallet} className="border-b-2">
+                        Connect your wallet to add tracks 🔌
                     </button>
                 )}
             </div>
-            {/* </div> */}
-        </main>
+        </>
     );
 }
