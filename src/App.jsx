@@ -7,15 +7,36 @@ import abi from './utils/MoshPit.json';
 export default function App() {
     const [currentAccount, setCurrentAccount] = useState('');
     const [allTracks, setAllTracks] = useState([]);
-    // const [isAddingTrack, updateAddingTrack] = useState(false);
+    const [showForm, updateShowForm] = useState(false);
+
+    const [newTitle, setNewTitle] = useState('');
+    const [newArtist, setNewArtist] = useState('');
+
+    const [mining, setMining] = useState(false);
 
     const contractAddress = `${process.env.REACT_APP_MOSHPIT_CONTRACT_DEPLOY}`;
     const contractABI = abi.abi;
 
     const formatAddress = (address) => {
-        return `${address.slice(0, 5)}...${address.slice(-3)}`;
+        return `${address.slice(0, 5)}...${address.slice(-5)}`;
     };
 
+    const displayForm = () => {
+        updateShowForm(true);
+    };
+
+    const hideForm = () => {
+        updateShowForm(false);
+    };
+
+    // const checkENS = (address) => {
+    //     const { ethereum } = window;
+
+    //     if (!ethereum) return;
+    //     const provider = ethers.providers.Web3Provider(ethereum);
+    //     provider.lookUpAddress
+    //     provider.resolveName('')
+    // }
     // console.log(getRandomRockEmoji());
     // const checkIfWalletIsConnected = async () => {
     //     try {
@@ -49,7 +70,7 @@ export default function App() {
             const { ethereum } = window;
             if (!ethereum) {
                 alert(
-                    "You'll need an Ethereum wallet like MetaMask to submit your song!"
+                    "You'll need an Ethereum wallet to submit your song! Try https://metamask.io/"
                 );
                 return;
             }
@@ -64,10 +85,12 @@ export default function App() {
     };
 
     const addTrack = async () => {
+        // if (!newArtist || !newTitle) return;
         try {
             const { ethereum } = window;
 
             if (ethereum) {
+                setMining(true);
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
                 const moshPitContract = new ethers.Contract(
@@ -80,14 +103,19 @@ export default function App() {
                 console.log('Retrieved total tracks added:', count.toNumber());
 
                 const songTxn = await moshPitContract.addTrack(
-                    'Normandy - Storm the walls'
+                    newTitle.trim(),
+                    newArtist.trim()
                 );
-                console.log('Mining..', songTxn.hash);
+                // console.log('Mining..', songTxn.hash);
 
                 await songTxn.wait();
                 console.log('Mined --', songTxn.hash);
 
                 getAllTracks();
+                setNewArtist('');
+                setNewTitle('');
+                hideForm();
+                setMining(false);
                 // count = await moshPitContract.getTotalTracks();
                 // console.log('Retrieved total tracks added:', count.toNumber());
             } else {
@@ -159,7 +187,8 @@ export default function App() {
                 let tracksCleaned = tracks.map((track) => ({
                     address: track.mosher,
                     timestamp: new Date(track.timestamp * 1000),
-                    message: track.message,
+                    title: track.title,
+                    artist: track.artist,
                     emoji: emojiDictionary[
                         Math.floor(Math.random() * emojiDictionary.length)
                     ],
@@ -202,12 +231,16 @@ export default function App() {
                                     key={index}
                                     className="mt-2 border-2 border-white  border-opacity-30 rounded-md p-3"
                                 >
-                                    <div className="font-display text-base">
-                                        {track.message}
+                                    <div className="font-display text-lg">
+                                        {track.title}
                                     </div>
+                                    <div className="italic text-base">
+                                        {track.artist}
+                                    </div>
+                                    <hr className="my-2" />
                                     <div className="flex">
                                         {track.emoji}{' '}
-                                        <div className="text-white text-opacity-70 pl-2">
+                                        <div className="text-white text-opacity-70 pl-2 text-sm">
                                             {formatAddress(track.address)}
                                             {' • '}
                                             {new Intl.DateTimeFormat(
@@ -221,7 +254,7 @@ export default function App() {
                 </div>
                 {/* </div> */}
             </main>
-            <div className="fixed bottom-0 p-4  bg-gradient-to-r from-red-600 to-purple-800 w-full backdrop-filter backdrop-blur-sm bg-opacity-50 text-center rounded-t-lg">
+            <div className="fixed bottom-0 p-4  bg-gradient-to-r from-red-600 to-purple-800 w-full backdrop-filter backdrop-blur-sm bg-opacity-50 rounded-t-lg transition duration-500 ease-in-out">
                 {currentAccount && (
                     <div className="bg-purple-800 bg-opacity-40 rounded-full flex items-center w-56 px-3 py-2">
                         <span className="flex h-3 w-3 relative mr-2">
@@ -231,32 +264,64 @@ export default function App() {
                         <p>Connected to {formatAddress(currentAccount)} </p>
                     </div>
                 )}
-                {currentAccount && (
+                {showForm && (
                     <div className="pt-6">
-                        <div className="text-left">
-                            <p>Song title</p>
+                        {/* <div className="text-left">
+                            <p className="py-3">Song title</p>
                             <input
                                 type="text"
-                                className="rounded-lg p-3 w-full font-sans placeholder-blue-300"
+                                className="rounded-lg p-3 w-full font-sans placeholder-gray-300"
                                 placeholder="Castaways"
                             />
-                        </div>
+                        </div> */}
                         <div className="text-left">
-                            <p>Artist</p>
+                            <label
+                                className="block text-white text-base mb-2"
+                                htmlFor="title"
+                            >
+                                Song title
+                            </label>
                             <input
+                                className="shadow appearance-none border rounded w-full p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
+                                id="title"
                                 type="text"
-                                className="rounded-lg p-3 w-full font-sans"
+                                value={newTitle}
+                                onChange={(e) => setNewTitle(e.target.value)}
+                                placeholder="Castaways"
+                            />
+
+                            <label
+                                className="block text-white text-base mb-2"
+                                htmlFor="artist"
+                            >
+                                Artist
+                            </label>
+                            <input
+                                className="shadow appearance-none border rounded w-full p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="artist"
+                                type="text"
+                                value={newArtist}
+                                onChange={(e) => setNewArtist(e.target.value)}
                                 placeholder="The Backyardigans"
                             />
                         </div>
                         <button
                             type="button"
-                            className="border-b-2"
+                            className="mt-4 bg-black text-white w-full rounded-lg py-3 bg-opacity-40 shadow-sm flex justify-center"
                             onClick={addTrack}
+                            disabled={mining}
                         >
-                            ADD YOUR TRACK
+                            {mining && (
+                                <div className="animate-bounce text-md">💽</div>
+                            )}
+                            {mining ? 'Adding your track...' : 'Add your track'}
                         </button>
                     </div>
+                )}
+                {currentAccount && !showForm && (
+                    <button onClick={displayForm} className="border-b-2 py-2">
+                        Add your favourite track
+                    </button>
                 )}
                 {!currentAccount && (
                     <button onClick={connectWallet} className="border-b-2">
