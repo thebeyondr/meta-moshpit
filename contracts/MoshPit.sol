@@ -9,11 +9,17 @@ contract MoshPit {
     // mapping(address => uint256) userTracksAdded;
 
     // Fires when a new track is added
-    event NewTrack(address indexed from, string message, uint256 timestamp);
+    event NewTrack(
+        address indexed from,
+        string title,
+        string artist,
+        uint256 timestamp
+    );
 
     struct Track {
         address mosher;
-        string message;
+        string title;
+        string artist;
         uint256 timestamp;
     }
 
@@ -23,14 +29,14 @@ contract MoshPit {
         console.log("Welcome to the MoshPit! :)");
     }
 
-    function addTrack(string memory _message) public {
+    function addTrack(string memory _title, string memory _artist) public {
         totalTracks += 1;
         // userTracksAdded[msg.sender] += 1;
         console.log("%s has added a banger!", msg.sender);
 
-        tracks.push(Track(msg.sender, _message, block.timestamp));
+        tracks.push(Track(msg.sender, _title, _artist, block.timestamp));
 
-        emit NewTrack(msg.sender, _message, block.timestamp);
+        emit NewTrack(msg.sender, _title, _artist, block.timestamp);
     }
 
     function getAllTracks() public view returns (Track[] memory) {

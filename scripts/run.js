@@ -10,7 +10,8 @@ const main = async () => {
     console.log('total tracks ', trackCount.toNumber());
 
     let addTrackTxn = await moshPitContract.addTrack(
-        'Nirvana - Smells Like Teen Spirit'
+        'Smells Like Teen Spirit',
+        'Nirvana'
     );
     await addTrackTxn.wait(); // wait for the transaction to be mined
 
@@ -19,7 +20,7 @@ const main = async () => {
     const [_, randomMosher] = await hre.ethers.getSigners();
     addTrackTxn = await moshPitContract
         .connect(randomMosher)
-        .addTrack('Metallica - Enter Sandman');
+        .addTrack('Enter Sandman', 'Metallica');
     await addTrackTxn.wait();
     console.log('Got to random add txn');
     // trackCount = await moshPitContract.getTotalTracks();
