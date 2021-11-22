@@ -125,30 +125,6 @@ export default function App() {
         }
     };
 
-    // const getTotalTracks = async () => {
-    //     try {
-    //         const { ethereum } = window;
-
-    //         if (ethereum) {
-    //             const provider = new ethers.providers.Web3Provider(ethereum);
-    //             const signer = provider.getSigner();
-    //             const moshPitContract = new ethers.Contract(
-    //                 contractAddress,
-    //                 contractABI,
-    //                 signer
-    //             );
-
-    //             let count = await moshPitContract.getTotalTracks();
-    //             console.log('total tracks added:', count.toNumber());
-    //             setAllTracks(count.toNumber());
-    //         } else {
-    //             console.log("Ethereum object doesn't exist!");
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
     const getAllTracks = async () => {
         const emojiDictionary = [
             '🤘',
@@ -174,7 +150,6 @@ export default function App() {
             const { ethereum } = window;
             if (ethereum) {
                 const provider = new ethers.providers.Web3Provider(ethereum);
-                // const signer = provider.getSigner();
                 const moshPitContract = new ethers.Contract(
                     contractAddress,
                     contractABI,
@@ -202,15 +177,9 @@ export default function App() {
         }
     };
 
-    // if (prevAccount !== currentAccount) {
-    //     checkIfWalletIsConnected();
-    // }
-    // useEffect(() => {
-    //     checkIfWalletIsConnected();
-    // }, []);
-
     useEffect(() => {
         getAllTracks();
+        // eslint-disable-next-line
     }, []);
 
     return (
