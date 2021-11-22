@@ -5,7 +5,11 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                display: ['Space Mono', ...defaultTheme.fontFamily.mono],
+                display: ['Fondamento', ...defaultTheme.fontFamily.mono],
+                mono: ['Space Mono', ...defaultTheme.fontFamily.mono],
+            },
+            colors: {
+                'neon-green': '#39FF14',
             },
         },
     },
